@@ -1,0 +1,1 @@
+ /Users/cecilymcneil/__dev/GPT/KaizaApp/apps/flat_city_1.0/.dart_tool/flutter_build/4a2500f5cce19d409b10add90e5df960/native_assets.yaml: 
