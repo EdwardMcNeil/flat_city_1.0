@@ -19,5 +19,10 @@ The graphical user interface (GUI) is designed to be a scrollable list for the e
 To protect the API keys in this public repository, the Android, IOS build directories are deleted along with the Firebase_options.dart API key file. 
 
 
+![IMG_1113](https://github.com/EdwardMcNeil/flat_city_1.0/assets/156551566/7c589693-056b-44b6-92da-75c5e1ef63c6)
+
+![IMG_1113](https://github.com/EdwardMcNeil/flat_city_1.0/assets/156551566/91972c58-31ee-4b27-88db-d8b683314ce1)
+
+
 
 
