@@ -5,8 +5,10 @@ import '../db/events.dart';
 import 'package:logger/logger.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 
+// A debug tool for printing to the terminal
 var logger = Logger(level: Level.warning);
 
+// Graphical output of all events in a list format
 class EventsListPage extends StatefulWidget {
   const EventsListPage({super.key});
 
@@ -14,6 +16,7 @@ class EventsListPage extends StatefulWidget {
   State<EventsListPage> createState() => _EventsListPageState();
 }
 
+// Update page
 class _EventsListPageState extends State<EventsListPage> {
   MyApplicationStateInitializer applicationStateInitializer =
       MyApplicationStateInitializer();
