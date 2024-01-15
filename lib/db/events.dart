@@ -72,6 +72,13 @@ class ApplicationState extends ChangeNotifier {
     return this;
   }
 
+  void signedOut() {
+    loggedIn = false;
+    emailVerified = false;
+    userIsAdmin = false;
+    userId = '';
+  }
+
   // If the developer email is inputted then the developer will get Admin privileges
   void setUserRole() {
     if (emailVerified && loggedIn) {
@@ -80,6 +87,16 @@ class ApplicationState extends ChangeNotifier {
         userIsAdmin = true;
       }
     }
+  }
+
+  late String _searchString = '';
+
+  String getSearchString() {
+    return _searchString;
+  }
+
+  void setSearchString(String s) {
+    _searchString = s;
   }
 
   // Fetching the User's ID to the database in order to associate any modifications the user may have made
@@ -97,6 +114,11 @@ class ApplicationState extends ChangeNotifier {
     String email = FirebaseAuth.instance.currentUser?.displayName ?? '';
     String result = email.isNotEmpty ? email.substring(0, 1) : 'You';
     return result;
+  }
+
+  String getUserEmailAddress(String userId) {
+    String email = FirebaseAuth.instance.currentUser?.email ?? '';
+    return email;
   }
 
   // Finishing fetching user data and input from user
@@ -134,6 +156,8 @@ class Event {
   late DateTime? endDate;
   late Timestamp? tStart;
   late Timestamp? tEnd;
+  late String? email;
+  late String? url;
 
   // Calling the class for the required fields of information
   Event({
@@ -147,19 +171,24 @@ class Event {
     this.userId,
     this.tStart,
     this.tEnd,
+    this.email,
+    this.url,
   });
   // Java script object notation is used here to parse Java Script syntax related data from database to strings & vice versa
   Event.fromJson(Map<String, Object?> json)
       : this(
-            title: json['title'] as String,
+          title: json['title'] as String,
 
-            /// date: json['date'] as String,
-            location: json['location'] as String,
-            description: json['description'] as String,
-            imageUrl: json['imageUrl'] as String?,
-            userId: json['userId'] as String?,
-            tStart: json['startDate'] as Timestamp,
-            tEnd: json['endDate'] as Timestamp);
+          /// date: json['date'] as String,
+          location: json['location'] as String,
+          description: json['description'] as String,
+          imageUrl: json['imageUrl'] as String?,
+          userId: json['userId'] as String?,
+          tStart: json['startDate'] as Timestamp,
+          tEnd: json['endDate'] as Timestamp,
+          email: json['email'] as String?,
+          url: json['url'] as String?,
+        );
   // Assigning the fields to the user inputted text here
   Map<String, Object?> toJson() {
     return {
@@ -172,6 +201,8 @@ class Event {
       'userId': userId,
       'startDate': startDate,
       'endDate': endDate,
+      'email': email,
+      'url': url,
     };
   }
 }
@@ -188,6 +219,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-11-25 08:00:00'),
     endDate: DateTime.parse('2024-11-25 12:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Flutter Meetup',
@@ -198,6 +230,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-12-02 10:00:00'),
     endDate: DateTime.parse('2024-12-02 13:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Flutter Workshop',
@@ -208,6 +241,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-10-23 11:00:00'),
     endDate: DateTime.parse('2024-10-23 15:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Chess Club',
@@ -217,6 +251,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-11-24 10:00:00'),
     endDate: DateTime.parse('2024-11-24 14:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'BBQ Night-Out',
@@ -226,6 +261,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-08-18 15:00:00'),
     endDate: DateTime.parse('2024-08-18 17:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Moutain Ski Trip',
@@ -235,6 +271,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-12-26 08:00:00'),
     endDate: DateTime.parse('2024-12-26 17:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Music Festival',
@@ -244,6 +281,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-07-18 11:00:00'),
     endDate: DateTime.parse('2024-07-18 17:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Play Rehearsal',
@@ -253,6 +291,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-09-25 13:00:00'),
     endDate: DateTime.parse('2024-09-25 16:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Fleching Lessons',
@@ -262,6 +301,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-11-25 10:00:00'),
     endDate: DateTime.parse('2024-11-25 13:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Around the Lake Marathon',
@@ -271,6 +311,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-08-29 07:00:00'),
     endDate: DateTime.parse('2024-08-29 17:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Community Cleanup',
@@ -280,6 +321,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-05-25 16:00:00'),
     endDate: DateTime.parse('2024-05-25 20:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
   Event(
     title: 'Bake Sale',
@@ -289,6 +331,7 @@ List<Event> events = [
     imageUrl: 'https://via.placeholder.com/300x200',
     startDate: DateTime.parse('2024-04-17 10:00:00'),
     endDate: DateTime.parse('2024-04-17 14:00:00'),
+    email: 'tortoise.effendi@gmail.com',
   ),
 ];
 // Storing a user's events to the database and back
@@ -297,16 +340,6 @@ final allEventsCollection =
           fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
           toFirestore: (event, _) => event.toJson(),
         );
-
-// Getting the events that have not expired only and ordered by most recent date
-final eventsCollection = FirebaseFirestore.instance
-    .collection('user')
-    .withConverter<Event>(
-      fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
-      toFirestore: (event, _) => event.toJson(),
-    )
-    .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
-    .orderBy('endDate');
 
 // Adding a new event and calling the database to receive this information
 Future<DocumentReference> addEvent(Event event) async {

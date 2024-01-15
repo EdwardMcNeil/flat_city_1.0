@@ -202,6 +202,8 @@ class _CreateEventPageState extends State<CreateEventPage> {
                           userId: myAppState.model.getUserId(),
                           startDate: startDate ?? DateTime.now(),
                           endDate: endDate ?? DateTime.now(),
+                          email: myAppState.model
+                              .getUserEmailAddress(myAppState.model.userId),
                         );
                         addEvent(newEvent);
                         alreadySubmitted = true;

@@ -13,19 +13,19 @@ var logger = Logger(level: Level.warning);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await myAppState.init().then((m) {
-      logger.d('here is our model: ${myAppState.model.iAmInitialized}');
-      runApp(const FlatCity());
-    });
-  }
+  await myAppState.init().then((m) {
+    logger.d('here is our model: ${myAppState.model.iAmInitialized}');
+    runApp(const FlatCity());
+  });
+}
 
-  // -- runApp(MultiProvider(
-  // --   providers: [
-  // --     ChangeNotifierProvider<ApplicationState>(
-  // --         create: (_) => applicationStateInitializer.model),
-  // --   ],
-  // --   builder: ((context, _) => const MaterialApp(home: EventsListPage())),
-  // -- ));
+// -- runApp(MultiProvider(
+// --   providers: [
+// --     ChangeNotifierProvider<ApplicationState>(
+// --         create: (_) => applicationStateInitializer.model),
+// --   ],
+// --   builder: ((context, _) => const MaterialApp(home: EventsListPage())),
+// -- ));
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
       routerConfig: getRoute(),
     );
   }
-
 }
 
 class FlatCity extends StatelessWidget {
@@ -60,7 +59,7 @@ class FlatCity extends StatelessWidget {
         ),
       ],
       child: Consumer<ThemeProvider>(
-        child: const EventsListPage(),
+        child: EventsListPage(searchString: myAppState.model.getSearchString()),
         builder: (c, themeProvider, child) {
           return MaterialApp.router(
             routerConfig: getRoute(),
@@ -93,7 +92,8 @@ GoRouter getRoute() {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const EventsListPage(),
+        builder: (context, state) =>
+            EventsListPage(searchString: myAppState.model.getSearchString()),
         routes: [
           GoRoute(
             path: 'sign-in',
@@ -186,6 +186,7 @@ GoRouter getRoute() {
                   ),
                   actions: [
                     SignedOutAction(((context) {
+                      myAppState.model.signedOut();
                       context.pushReplacement('/');
                     })),
                   ],
