@@ -9,12 +9,16 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 //import 'dart.io';
 import 'package:logger/logger.dart';
 
+// A debug tool to write to the terminal
 var logger = Logger(level: Level.warning);
 
+// Class to show that graphical output has been initialized
 class MyApplicationStateInitializer {
   late ApplicationState model;
+  // Instantiating some special data types for the date
   late DateTime startDate;
   late DateTime endDate;
+  // A method to print text to the terminal that the app is initializing
   Future<ApplicationState> init() async {
     ApplicationState x = ApplicationState();
     logger.d('waiting for init app');
@@ -35,13 +39,16 @@ class MyApplicationStateInitializer {
 
 MyApplicationStateInitializer myAppState = MyApplicationStateInitializer();
 
+// Class for User Login
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {}
+  // Global bool variables
   bool loggedIn = false;
   bool emailVerified = false;
   bool userIsAdmin = false;
   bool iAmInitialized = false;
   String userId = '';
+  // Method to check that the Email of user is verified
   Future<ApplicationState> initDb() async {
     logger.d('initDb');
 
@@ -65,6 +72,7 @@ class ApplicationState extends ChangeNotifier {
     return this;
   }
 
+  // If the developer email is inputted then the developer will get Admin privileges
   void setUserRole() {
     if (emailVerified && loggedIn) {
       String email = FirebaseAuth.instance.currentUser?.email ?? "Nothing";
@@ -74,6 +82,7 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  // Fetching the User's ID to the database in order to associate any modifications the user may have made
   String getUserId() {
     String userId = '';
     if (emailVerified && loggedIn) {
@@ -83,12 +92,14 @@ class ApplicationState extends ChangeNotifier {
     return userId;
   }
 
+  // From the database get the user's display name else just set as "You"
   String getInitialForCurrentUser() {
     String email = FirebaseAuth.instance.currentUser?.displayName ?? '';
     String result = email.isNotEmpty ? email.substring(0, 1) : 'You';
     return result;
   }
 
+  // Finishing fetching user data and input from user
   Future<void> refreshLoggedInUser() async {
     final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -103,16 +114,20 @@ class ApplicationState extends ChangeNotifier {
     logger.d('user role is admin: $userIsAdmin');
   }
 
+  // Everything is initiated and user has logged in then return true for the bools
   bool userVerified() {
     return loggedIn && emailVerified;
   }
 } // end ApplicationState
 
+// The event class with fields of data like title, location, descripiton of event
 class Event {
+  // Initializing the fields
   final String title;
   // final String date;
   final String location;
   final String description;
+  // Question mark means the field can be null or no user input
   final String? imageUrl;
   late String? userId;
   late DateTime? startDate;
@@ -120,6 +135,7 @@ class Event {
   late Timestamp? tStart;
   late Timestamp? tEnd;
 
+  // Calling the class for the required fields of information
   Event({
     required this.title,
     // equired this.date,
@@ -132,7 +148,7 @@ class Event {
     this.tStart,
     this.tEnd,
   });
-
+  // Java script object notation is used here to parse Java Script syntax related data from database to strings & vice versa
   Event.fromJson(Map<String, Object?> json)
       : this(
             title: json['title'] as String,
@@ -144,7 +160,7 @@ class Event {
             userId: json['userId'] as String?,
             tStart: json['startDate'] as Timestamp,
             tEnd: json['endDate'] as Timestamp);
-
+  // Assigning the fields to the user inputted text here
   Map<String, Object?> toJson() {
     return {
       // Event details
@@ -160,7 +176,9 @@ class Event {
   }
 }
 
+// Some pre-written Events displaying to show initial visual output
 List<Event> events = [
+  // Contains the fields listed above
   Event(
     title: 'Community Hackathon',
     // date: '2024-11-25',
@@ -273,13 +291,14 @@ List<Event> events = [
     endDate: DateTime.parse('2024-04-17 14:00:00'),
   ),
 ];
-
+// Storing a user's events to the database and back
 final allEventsCollection =
     FirebaseFirestore.instance.collection('user').withConverter<Event>(
           fromFirestore: (snapshot, _) => Event.fromJson(snapshot.data()!),
           toFirestore: (event, _) => event.toJson(),
         );
 
+// Getting the events that have not expired only and ordered by most recent date
 final eventsCollection = FirebaseFirestore.instance
     .collection('user')
     .withConverter<Event>(
@@ -289,6 +308,7 @@ final eventsCollection = FirebaseFirestore.instance
     .where('endDate', isGreaterThanOrEqualTo: DateTime.now())
     .orderBy('endDate');
 
+// Adding a new event and calling the database to receive this information
 Future<DocumentReference> addEvent(Event event) async {
   DocumentReference doc = await allEventsCollection.add(event).then((result) {
     logger.d('We added an event with results $result');
@@ -297,6 +317,7 @@ Future<DocumentReference> addEvent(Event event) async {
   return doc;
 }
 
+// Assigning the user's ID to that person's events
 void oneTime(String userId) async {
   for (Event e in events) {
     e.userId = userId;
