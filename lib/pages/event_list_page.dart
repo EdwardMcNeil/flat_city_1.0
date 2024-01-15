@@ -247,13 +247,23 @@ class _EventsListPageState extends State<EventsListPage> {
           ),
           Visibility(
             visible: myAppState.model.userVerified(),
-            child: ElevatedButton(
+            child: IconButton(
               onPressed: () {
                 // The profile icon in the upper right corner leading to information of the user
                 context.push('/profile');
               },
               //child: const Text('Add Event'),
-              child: const Icon(Icons.verified_user),
+              icon: const Icon(Icons.verified_user_outlined),
+            ),
+          ),
+          Visibility(
+            visible: myAppState.model.userVerified(),
+            child: IconButton(
+              onPressed: () {
+                // The profile icon in the upper right corner leading to information of the user
+                context.push('/info');
+              },
+              icon: const Icon(Icons.info_outline),
             ),
           ),
           Visibility(

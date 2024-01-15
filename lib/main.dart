@@ -8,6 +8,7 @@ import 'widgets/theme_switcher.dart';
 import 'widgets/user_icon.dart';
 import 'pages/event_list_page.dart';
 import 'pages/create_event_page.dart';
+import 'pages/info_page.dart';
 
 var logger = Logger(level: Level.warning);
 
@@ -231,6 +232,10 @@ GoRouter getRoute() {
             path: 'add',
             builder: (context, state) => const CreateEventPage(),
           ),
+          GoRoute(
+            path: 'info',
+            builder: (context, state) => InfoPage(),
+          )
           // -- ),
           // -- GoRoute(
           // --   path: 'photo',
