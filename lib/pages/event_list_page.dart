@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../db/events.dart';
 import 'package:logger/logger.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -72,6 +73,11 @@ class _EventsListPageState extends State<EventsListPage> {
         pageSize: 10,
         itemBuilder: (context, snapshot) {
           Event event = snapshot.data();
+          event.startDate = event.tStart!.toDate();
+          event.endDate = event.tEnd!.toDate();
+          DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+          String startFormattedDate = formatter.format(event.startDate!);
+          String endFormattedDate = formatter.format(event.endDate!);
           return Card(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -86,7 +92,9 @@ class _EventsListPageState extends State<EventsListPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text('Date: ${event.date}'),
+                  Text('Start: $startFormattedDate'),
+                  const SizedBox(height: 8),
+                  Text('End: $endFormattedDate'),
                   const SizedBox(height: 8),
                   Text('Location: ${event.location}'),
                   const SizedBox(height: 8),
@@ -101,39 +109,6 @@ class _EventsListPageState extends State<EventsListPage> {
           );
         },
       ),
-      //  ListView.builder(
-      //    itemCount: events.length,
-      //    itemBuilder: (context, index) {
-      //      final event = events[index];
-      //      return Card(
-      //        child: Padding(
-      //          padding: const EdgeInsets.all(16.0),
-      //          child: Column(
-      //            crossAxisAlignment: CrossAxisAlignment.start,
-      //            children: [
-      //              Text(
-      //                event.title,
-      //                style: const TextStyle(
-      //                  fontWeight: FontWeight.bold,
-      //                  fontSize: 16,
-      //                ),
-      //              ),
-      //              const SizedBox(height: 8),
-      //              Text('Date: ${event.date}'),
-      //              const SizedBox(height: 8),
-      //              Text('Location: ${event.location}'),
-      //              const SizedBox(height: 8),
-      //              Text(event.description),
-      //              const SizedBox(height: 8),
-      //              // -- event.imageUrl.isNotEmpty
-      //              // --     ? Image.network(event.imageUrl)
-      //              // --     : const Text('')
-      //            ],
-      //          ),
-      //        ),
-      //      );
-      //    },
-      //  ),
     );
   }
 }

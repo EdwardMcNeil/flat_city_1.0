@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_cupertino_datetime_picker/flutter_cupertino_datetime_picker.dart';
 import '../db/events.dart';
+import '../widgets/date_time_picker_in_page.dart';
 
 class CreateEventPage extends StatefulWidget {
   const CreateEventPage({Key? key}) : super(key: key);
@@ -19,6 +21,9 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime startDate = DateTime.now(); // Initialize with current date
+    DateTime endDate = DateTime.now(); // Initialize with current date
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Create Event'),
@@ -43,18 +48,42 @@ class _CreateEventPageState extends State<CreateEventPage> {
                       },
                     ),
                     const SizedBox(height: 8),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Date',
-                      ),
-                      controller: dateController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a date';
-                        }
-                        return null;
+                    ElevatedButton(
+                      //color: Colors.blue,
+                      child: const Text("Start Date and Time"),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const DateTimePickerInPage(
+                              title: 'Enter start date and time',
+                              isStartDate: true);
+                        }));
                       },
                     ),
+                    ElevatedButton(
+                      //color: Colors.blue,
+                      child: const Text("End Date and Time"),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const DateTimePickerInPage(
+                              title: 'Enter end date and time',
+                              isStartDate: false);
+                        }));
+                      },
+                    ),
+                    // TextFormField(
+                    //   decoration: const InputDecoration(
+                    //     labelText: 'Date',
+                    //   ),
+                    //   controller: dateController,
+                    //   validator: (value) {
+                    //     if (value == null || value.isEmpty) {
+                    //       return 'Please enter a date';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     const SizedBox(height: 8),
                     TextFormField(
                       decoration: const InputDecoration(
@@ -86,10 +115,12 @@ class _CreateEventPageState extends State<CreateEventPage> {
                         logger.d('Form submitted successfully!');
                         Event newEvent = Event(
                           title: nameController.text,
-                          date: dateController.text,
+                          // date: dateController.text,
                           location: locationController.text,
                           description: descriptionController.text,
                           userId: myAppState.model.getUserId(),
+                          startDate: myAppState.startDate,
+                          endDate: myAppState.endDate,
                         );
                         addEvent(newEvent);
                       }
